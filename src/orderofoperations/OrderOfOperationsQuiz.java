@@ -19,10 +19,15 @@ public class OrderOfOperationsQuiz {
 	}
 
 	private void go() {
+		boolean shuffle = false;
 		Scanner sc = new Scanner(System.in);
 		String[] guesses;
 
 		while (true) {
+			if(shuffle) {
+				quiz.shuffleList();
+				shuffle = false;
+			}
 			shuffledQuiz = quiz.getShuffledAnswers();
 			printShuffledQuiz();
 
@@ -34,11 +39,15 @@ public class OrderOfOperationsQuiz {
 					shuffledQuiz = quiz.getOriginalMap();
 					printShuffledQuiz();
 				}else {
+					shuffle = true;
 					continue;
 				}
+				
 				System.out.print("\n(Q)uit or any other key to try again: ");
 				if(!sc.nextLine().equalsIgnoreCase("q")) {
 					continue;
+				}else {
+					shuffle = true;
 				}
 			}
 			break;
