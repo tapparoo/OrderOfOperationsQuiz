@@ -38,7 +38,7 @@ public class OrderOfOperationsQuiz {
 
 			getPlayerGuesses(sc);
 
-			if (guesses != null && guesses.length == shuffledQuiz.size()) {
+			if (guesses[keys.size() - 1] != null) {
 				System.out.println(quiz.judgeAnswers(guesses));
 				System.out.print("See unshuffled (a)nswers or (t)ry again? ");
 				if (sc.next().equalsIgnoreCase("a")) {
