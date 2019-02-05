@@ -1,6 +1,7 @@
 package orderofoperations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -8,6 +9,8 @@ import java.util.Scanner;
 public class OrderOfOperationsQuiz {
 	Map<String, String[]> shuffledQuiz;
 	OrderOfOperations quiz;
+	List<String> keys;
+	String[] guesses;
 
 	{
 		quiz = new OrderOfOperations();
@@ -21,81 +24,102 @@ public class OrderOfOperationsQuiz {
 	private void go() {
 		boolean shuffle = false;
 		Scanner sc = new Scanner(System.in);
-		String[] guesses;
 
 		while (true) {
-			if(shuffle) {
+			if (shuffle) {
 				quiz.shuffleList();
 				shuffle = false;
 			}
 			shuffledQuiz = quiz.getShuffledAnswers();
+			keys = new ArrayList<>(shuffledQuiz.keySet());
+			guesses = new String[quiz.getShuffledAnswers().size()];
+
 			printShuffledQuiz();
 
-			guesses = getPlayerGuesses(sc);
-			if (guesses != null && guesses.length == shuffledQuiz.keySet().size()) {
+			getPlayerGuesses(sc);
+
+			if (guesses != null && guesses.length == shuffledQuiz.size()) {
 				System.out.println(quiz.judgeAnswers(guesses));
 				System.out.print("See unshuffled (a)nswers or (t)ry again? ");
-				if(sc.nextLine().equalsIgnoreCase("a")) {
+				if (sc.next().equalsIgnoreCase("a")) {
 					shuffledQuiz = quiz.getOriginalMap();
+					guesses = new String[shuffledQuiz.size()];
+					System.out.println("\n\n**********************SOLUTION BELOW************************");
 					printShuffledQuiz();
-				}else {
+				} else {
 					shuffle = true;
 					continue;
 				}
-				
+
 				System.out.print("\n(Q)uit or any other key to try again: ");
-				if(!sc.nextLine().equalsIgnoreCase("q")) {
+				if (!sc.next().equalsIgnoreCase("q")) {
 					continue;
-				}else {
+				} else {
 					shuffle = true;
 				}
 			}
 			break;
 		}
-
 		sc.close();
-
 	}
 
-	private String[] getPlayerGuesses(Scanner sc) {
-		String[] answers = null;
-
-	OUTER:	while (true) {
-			System.out.print(
-					"\nEnter the correct order of operators' precedence in the following format:\n\t(F,D,A,E,C,B)\n>> ");
-			answers = sc.nextLine().split(",");
-
-			if (answers.length < shuffledQuiz.keySet().size()) {
-				System.out.print("You did not enter enough answers.  Try again? (y/n) ");
-				if (sc.nextLine().equalsIgnoreCase("Y")) {
-					continue;
-				} else
-					break;
-			}
-
-			for (int i = 0; i < shuffledQuiz.keySet().size(); i++) {
-				answers[i] = answers[i].toUpperCase().trim();
-				if (!shuffledQuiz.containsKey(answers[i])) {
-					System.out.println(answers[i] + " is an invalid response.  Try again? (y/n) ");
-					if (sc.nextLine().equalsIgnoreCase("Y")) {
-						continue OUTER;
+	private void getPlayerGuesses(Scanner sc) {
+		System.out.print(
+				"\nEnter the correct order of operators' precedence one key at a time, followed by Enter: \n>> ");
+		
+		OUTER: for (int i = 0; i < shuffledQuiz.size(); i++) {
+			String answer = "";
+			while (true) {
+				answer = sc.next().toUpperCase();
+				if (!shuffledQuiz.containsKey(answer)) {
+					System.out.println(answer + " is an invalid response.  Try again? (y/n) ");
+					if (sc.next().equalsIgnoreCase("Y")) {
+						System.out.print(">> ");
+						continue;
 					} else
 						break OUTER;
 				}
+				break;
 			}
-			break;
+			guesses[i] = answer;
+			printShuffledQuiz();
+			System.out.print(">> ");
 		}
-		return answers;
 	}
 
 	void printShuffledQuiz() {
-		List<String> keys = new ArrayList<>(shuffledQuiz.keySet());
+		String underlinedSpaces = " \u0332 \u0332";
+		List<String> guessed = Arrays.asList(guesses);
 
-		System.out.printf("\n\n%28s\t\t%15s%n", "Operator", "Examples");
+		System.out.printf("\n\n%24s   %s    %s \t\t    %s%n", "Operator", "Key", "Examples", "Order");
 		separator();
-		for (String key : keys) {
-			System.out.printf("%31s (%s) \t%s%n", shuffledQuiz.get(key)[0], key, shuffledQuiz.get(key)[1]);
+
+		for (int i = 0; i < shuffledQuiz.size(); i++) {
+			String key = keys.get(i);
+			String strike = guessed.contains(key) ? strikeOutText(key) : key;
+
+			if ((guesses[i] == null)) {
+				System.out.printf("%25s  %2s\t  %-28s%s\n", shuffledQuiz.get(key)[0], strike, shuffledQuiz.get(key)[1],
+						underlinedSpaces);
+			} else {
+				System.out.printf("%25s  %2s\t  %-28s%s\n", shuffledQuiz.get(key)[0], strike, shuffledQuiz.get(key)[1],
+						guesses[i]);
+			}
 		}
+	}
+
+	// Tried to apply this to the whole line, but it really screws up the
+	// font/spacing
+	String strikeOutText(String s) {
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < s.length(); i++) {
+			sb.append("-");
+			sb.append(s.substring(i, i + 1));
+			sb.append("\u0336-");
+		}
+
+		return sb.toString();
 	}
 
 	void separator() {

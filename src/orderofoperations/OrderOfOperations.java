@@ -11,17 +11,20 @@ public class OrderOfOperations {
 	private Map<String, String[]> shuffledAnswers = new HashMap<>();
 	
 	{
-		ANSWER_KEY.put("A", new String[]{"Post-unary operators", "expression++, expression--"});
-		ANSWER_KEY.put("B", new String[]{"Pre-unary operators", "++expression, --expression"});
-		ANSWER_KEY.put("C", new String[]{"Other unary operators", "-, !"});
-		ANSWER_KEY.put("D", new String[]{"Multiplication/Division/Modulus", "*, /, %"});
-		ANSWER_KEY.put("E", new String[]{"Addition/Subtraction", "+, -"});
-		ANSWER_KEY.put("F", new String[]{"Relational operators", "<, >, <=, >="});
-		ANSWER_KEY.put("G", new String[]{"Equal to/not equal to", "==, !="});
-		ANSWER_KEY.put("H", new String[]{"Logical operators", "&, ^, |"});
-		ANSWER_KEY.put("I", new String[]{"Short-circuit logical operators", "&&, ||"});
-		ANSWER_KEY.put("J", new String[]{"Ternary operators", "boolean expression ? expression1 : expression 2"});
-		ANSWER_KEY.put("K", new String[]{"Assignment operators", "=, +=, -=, *=, /=, %="});
+		ANSWER_KEY.put("A", new String[]{"Paren/Array/dot", "(), [], ."});
+		ANSWER_KEY.put("B", new String[]{"Post-unary", "i++, i--"});
+		ANSWER_KEY.put("C", new String[]{"Pre-unary", "++i, --i"});
+		ANSWER_KEY.put("D", new String[]{"Other unary", "-, !"});
+		ANSWER_KEY.put("E", new String[]{"Mult/Div/Mod", "*, /, %"});
+		ANSWER_KEY.put("F", new String[]{"Add/Subtract", "+, -"});
+		ANSWER_KEY.put("G", new String[]{"Relational", "<, >, <=, >="});
+		ANSWER_KEY.put("H", new String[]{"Equal/not equal", "==, !="});
+		ANSWER_KEY.put("I", new String[]{"Bitwise AND", "&"});
+		ANSWER_KEY.put("J", new String[]{"Bitwise inclusive OR", "|"});
+		ANSWER_KEY.put("K", new String[]{"Short-circuit AND", "&&"});
+		ANSWER_KEY.put("L", new String[]{"Short-circuit OR", "||"});
+		ANSWER_KEY.put("M", new String[]{"Ternary", "boolean ? expr1 : expr2"});
+		ANSWER_KEY.put("N", new String[]{"Assignment", "=, +=, -=, *=, /=, %="});
 	}
 	
 	public OrderOfOperations() {
