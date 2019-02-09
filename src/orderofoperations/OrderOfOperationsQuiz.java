@@ -2,15 +2,17 @@ package orderofoperations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 public class OrderOfOperationsQuiz {
 	Map<String, String[]> shuffledQuiz;
 	OrderOfOperations quiz;
 	List<String> keys;
-	String[] guesses;
+	Set<String> guesses;
 
 	{
 		quiz = new OrderOfOperations();
@@ -32,18 +34,18 @@ public class OrderOfOperationsQuiz {
 			}
 			shuffledQuiz = quiz.getShuffledAnswers();
 			keys = new ArrayList<>(shuffledQuiz.keySet());
-			guesses = new String[quiz.getShuffledAnswers().size()];
+			guesses = new HashSet<>();
 
 			printShuffledQuiz();
 
 			getPlayerGuesses(sc);
 
-			if (guesses[keys.size() - 1] != null) {
+			if (guesses.size() == keys.size()) {
 				System.out.println(quiz.judgeAnswers(guesses));
 				System.out.print("See unshuffled (a)nswers or (t)ry again? ");
 				if (sc.next().equalsIgnoreCase("a")) {
 					shuffledQuiz = quiz.getOriginalMap();
-					guesses = new String[shuffledQuiz.size()];
+					guesses = new HashSet<>();
 					System.out.println("\n\n**********************SOLUTION BELOW************************");
 					printShuffledQuiz();
 				} else {
@@ -66,7 +68,7 @@ public class OrderOfOperationsQuiz {
 	private void getPlayerGuesses(Scanner sc) {
 		System.out.print(
 				"\nEnter the correct order of operators' precedence one key at a time, followed by Enter: \n>> ");
-		
+
 		OUTER: for (int i = 0; i < shuffledQuiz.size(); i++) {
 			String answer = "";
 			while (true) {
@@ -78,18 +80,26 @@ public class OrderOfOperationsQuiz {
 						continue;
 					} else
 						break OUTER;
+				} else if (guesses.contains(answer)) {
+					System.out.println(answer + " was already guessed.  Try again? (y/n) ");
+					if (sc.next().equalsIgnoreCase("Y")) {
+						System.out.print(">> ");
+						continue;
+					} else
+						break OUTER;
+				} else {
+					guesses.add(answer);
+					printShuffledQuiz();
+					System.out.print(">> ");
 				}
 				break;
 			}
-			guesses[i] = answer;
-			printShuffledQuiz();
-			System.out.print(">> ");
 		}
 	}
 
 	void printShuffledQuiz() {
 		String underlinedSpaces = " \u0332 \u0332";
-		List<String> guessed = Arrays.asList(guesses);
+		List<String> guessed = new ArrayList<>(guesses);
 
 		System.out.printf("\n\n%24s   %s    %s \t\t    %s%n", "Operator", "Key", "Examples", "Order");
 		separator();
@@ -98,12 +108,12 @@ public class OrderOfOperationsQuiz {
 			String key = keys.get(i);
 			String strike = guessed.contains(key) ? strikeOutText(key) : key;
 
-			if ((guesses[i] == null)) {
+			if ((guesses.size() - 1 < i)) {
 				System.out.printf("%25s  %2s\t  %-28s%s\n", shuffledQuiz.get(key)[0], strike, shuffledQuiz.get(key)[1],
 						underlinedSpaces);
 			} else {
 				System.out.printf("%25s  %2s\t  %-28s%s\n", shuffledQuiz.get(key)[0], strike, shuffledQuiz.get(key)[1],
-						guesses[i]);
+						guessed.get(i));
 			}
 		}
 	}
